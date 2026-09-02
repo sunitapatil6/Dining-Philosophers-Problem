@@ -1,0 +1,7 @@
+{
+  "name": "Dining Philosophers Problem",
+  "description": "An interactive educational guide and visual simulator for the Dining Philosophers Problem in Operating Systems.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
+

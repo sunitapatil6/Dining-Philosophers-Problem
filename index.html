@@ -1,0 +1,967 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dining Philosophers Problem - Process Synchronization</title>
+  <meta name="description" content="A comprehensive educational website and interactive visual simulator for the Dining Philosophers Problem in Operating Systems." />
+  <meta property="og:title" content="Dining Philosophers Problem - Process Synchronization" />
+  <meta property="og:description" content="Understand process synchronization, concurrency, deadlock, and starvation with interactive animations and simulations." />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- Top Sticky Navigation Bar -->
+  <nav class="navbar" id="mainNavbar">
+    <div class="nav-container">
+      <a href="#home" class="nav-brand" id="navBrandLink">
+        <svg class="nav-logo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10" />
+          <path d="M12 2a10 10 0 0 1 10 10" />
+          <circle cx="12" cy="12" r="3" />
+        </svg>
+        <span>Dining Philosophers</span>
+      </a>
+
+      <button class="nav-toggle" id="navToggle" aria-label="Toggle Navigation">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="3" y1="12" x2="21" y2="12"></line>
+          <line x1="3" y1="6" x2="21" y2="6"></line>
+          <line x1="3" y1="18" x2="21" y2="18"></line>
+        </svg>
+      </button>
+
+      <ul class="nav-links" id="navLinks">
+        <li><a href="#home" class="nav-link">Home</a></li>
+        <li><a href="#concept" class="nav-link">Concept</a></li>
+        <li><a href="#visualization" class="nav-link">Visualization</a></li>
+        <li><a href="#algorithm" class="nav-link">Algorithm</a></li>
+        <li><a href="#modulo" class="nav-link">Modulo Math</a></li>
+        <li><a href="#simulation" class="nav-link">Simulation</a></li>
+        <li><a href="#deadlock" class="nav-link">Deadlock</a></li>
+        <li><a href="#solutions" class="nav-link">Solutions</a></li>
+        <li><a href="#walkthrough" class="nav-link">Example</a></li>
+        <li><a href="#comparison" class="nav-link">Comparison</a></li>
+        <li><a href="#quiz" class="nav-link">Quiz</a></li>
+        <li><a href="#takeaways" class="nav-link">Takeaways</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <main>
+    <!-- 1. HOME SECTION -->
+    <section class="hero-section" id="home">
+      <div class="container hero-content">
+        <div class="hero-badge">Operating Systems &bull; Process Synchronization</div>
+        <h1 class="hero-title" id="mainHeroTitle">Dining Philosophers Problem</h1>
+        <h2 class="hero-subtitle">Understanding Process Synchronization, Deadlock and Starvation</h2>
+        <p class="hero-desc">
+          A classic synchronization problem that demonstrates the fundamental challenges of coordinating multiple concurrent processes competing for a limited set of shared resources.
+        </p>
+        <div class="hero-actions">
+          <a href="#concept" class="btn-primary" id="btnStartLearning">
+            <span>Start Learning</span>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M5 12h14M12 5l7 7-7 7" />
+            </svg>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. BASIC CONCEPT -->
+    <section class="section" id="concept">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-tag">Fundamentals</span>
+          <h2 class="section-title">The Basic Concept</h2>
+          <p class="section-subtitle">A simple thought experiment formulated by Edsger Dijkstra to illustrate process synchronization dilemmas.</p>
+        </div>
+
+        <div class="concept-grid">
+          <div class="concept-card">
+            <h3 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 0.75rem;">Problem Scenario</h3>
+            <p style="color: var(--text-muted); font-size: 0.975rem;">
+              Imagine five philosophers seated around a circular dining table. Their lives consist exclusively of alternating periods of thinking and eating:
+            </p>
+            <ul class="scenario-list">
+              <li class="scenario-item">
+                <span class="scenario-bullet">1</span>
+                <span><strong>Five philosophers</strong> are sitting around a circular table.</span>
+              </li>
+              <li class="scenario-item">
+                <span class="scenario-bullet">2</span>
+                <span>There are <strong>five chopsticks</strong> placed between adjacent philosophers.</span>
+              </li>
+              <li class="scenario-item">
+                <span class="scenario-bullet">3</span>
+                <span>Each philosopher spends their time <strong>THINKING</strong>.</span>
+              </li>
+              <li class="scenario-item">
+                <span class="scenario-bullet">4</span>
+                <span>When hungry, a philosopher needs <strong>TWO chopsticks</strong> (left and right) to <strong>EAT</strong>.</span>
+              </li>
+              <li class="scenario-item">
+                <span class="scenario-bullet">5</span>
+                <span>After eating, the philosopher <strong>PUTS DOWN</strong> both chopsticks.</span>
+              </li>
+              <li class="scenario-item">
+                <span class="scenario-bullet">6</span>
+                <span>Then the philosopher starts thinking again.</span>
+              </li>
+            </ul>
+          </div>
+
+          <div class="concept-card">
+            <h3 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 0.75rem;">Why is this a Synchronization Problem?</h3>
+            <p style="color: var(--text-muted); font-size: 0.95rem; line-height: 1.7; margin-bottom: 1rem;">
+              In Operating Systems terms:
+            </p>
+            <div style="display: flex; flex-direction: column; gap: 0.75rem; font-size: 0.925rem;">
+              <div style="background: var(--bg-page); padding: 0.75rem 1rem; border-radius: var(--radius-sm); border-left: 3px solid var(--primary);">
+                <strong>Philosophers = Processes / Threads</strong> executing tasks.
+              </div>
+              <div style="background: var(--bg-page); padding: 0.75rem 1rem; border-radius: var(--radius-sm); border-left: 3px solid var(--primary);">
+                <strong>Chopsticks = Shared Resources</strong> requiring mutual exclusion.
+              </div>
+              <div style="background: var(--bg-page); padding: 0.75rem 1rem; border-radius: var(--radius-sm); border-left: 3px solid var(--primary);">
+                <strong>Eating = Critical Section</strong> requiring concurrent resource locking.
+              </div>
+            </div>
+            <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 1rem;">
+              Without proper synchronization, multiple processes may hold onto one resource while waiting indefinitely for another, creating a <strong>Deadlock</strong> or leading to <strong>Starvation</strong>.
+            </p>
+          </div>
+        </div>
+
+        <!-- Life Cycle Visual Flow -->
+        <div class="cycle-container">
+          <div class="cycle-title">The Continuous Philosopher Lifecycle</div>
+          <div class="cycle-flow">
+            <div class="cycle-node think">THINK</div>
+            <span class="cycle-arrow">&rarr;</span>
+            <div class="cycle-node pickup">PICK UP CHOPSTICKS</div>
+            <span class="cycle-arrow">&rarr;</span>
+            <div class="cycle-node eat">EAT</div>
+            <span class="cycle-arrow">&rarr;</span>
+            <div class="cycle-node putdown">PUT DOWN CHOPSTICKS</div>
+            <span class="cycle-arrow">&rarr;</span>
+            <div class="cycle-node think">THINK</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. DINING TABLE VISUALIZATION -->
+    <section class="section section-alt" id="visualization">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-tag">Architecture</span>
+          <h2 class="section-title">Dining Table Visualization</h2>
+          <p class="section-subtitle">Visual representation of 5 philosophers (P0&ndash;P4) and 5 shared chopsticks (C0&ndash;C4) arranged around the circular table.</p>
+        </div>
+
+        <div class="vis-card">
+          <div class="vis-diagram-wrapper">
+            <div class="table-svg-container">
+              <svg class="table-svg" viewBox="0 0 500 500">
+                <!-- Outer Wood Table Border -->
+                <circle cx="250" cy="250" r="190" fill="#f8fafc" stroke="#cbd5e1" stroke-width="4" />
+                <!-- Inner Table Surface -->
+                <circle cx="250" cy="250" r="135" fill="#ffffff" stroke="#94a3b8" stroke-width="2" stroke-dasharray="4 4" />
+                <circle cx="250" cy="250" r="45" fill="#f1f5f9" stroke="#cbd5e1" stroke-width="1.5" />
+                <text x="250" y="245" text-anchor="middle" font-size="12" font-weight="700" fill="#64748b">SHARED</text>
+                <text x="250" y="262" text-anchor="middle" font-size="11" font-weight="600" fill="#94a3b8">TABLE</text>
+
+                <!-- Chopsticks (Lines between philosophers) -->
+                <!-- C1 (between P0 and P1) -->
+                <line x1="291" y1="193" x2="315" y2="161" stroke="#94a3b8" stroke-width="5" stroke-linecap="round" />
+                <rect x="290" y="160" width="30" height="20" rx="4" fill="#f8fafc" stroke="#cbd5e1" />
+                <text x="305" y="174" text-anchor="middle" font-size="11" font-weight="800" fill="#334155">C1</text>
+
+                <!-- C2 (between P1 and P2) -->
+                <line x1="317" y1="272" x2="355" y2="284" stroke="#94a3b8" stroke-width="5" stroke-linecap="round" />
+                <rect x="325" y="265" width="30" height="20" rx="4" fill="#f8fafc" stroke="#cbd5e1" />
+                <text x="340" y="279" text-anchor="middle" font-size="11" font-weight="800" fill="#334155">C2</text>
+
+                <!-- C3 (between P2 and P3) -->
+                <line x1="250" y1="320" x2="250" y2="360" stroke="#94a3b8" stroke-width="5" stroke-linecap="round" />
+                <rect x="235" y="325" width="30" height="20" rx="4" fill="#f8fafc" stroke="#cbd5e1" />
+                <text x="250" y="339" text-anchor="middle" font-size="11" font-weight="800" fill="#334155">C3</text>
+
+                <!-- C4 (between P3 and P4) -->
+                <line x1="183" y1="272" x2="145" y2="284" stroke="#94a3b8" stroke-width="5" stroke-linecap="round" />
+                <rect x="145" y="265" width="30" height="20" rx="4" fill="#f8fafc" stroke="#cbd5e1" />
+                <text x="160" y="279" text-anchor="middle" font-size="11" font-weight="800" fill="#334155">C4</text>
+
+                <!-- C0 (between P4 and P0) -->
+                <line x1="209" y1="193" x2="185" y2="161" stroke="#94a3b8" stroke-width="5" stroke-linecap="round" />
+                <rect x="180" y="160" width="30" height="20" rx="4" fill="#f8fafc" stroke="#cbd5e1" />
+                <text x="195" y="174" text-anchor="middle" font-size="11" font-weight="800" fill="#334155">C0</text>
+
+                <!-- 5 Philosophers (Circles) -->
+                <!-- P0 (Top) -->
+                <g id="vis-phil-0">
+                  <circle cx="250" cy="105" r="32" fill="#eff6ff" stroke="#3b82f6" stroke-width="3" />
+                  <text x="250" y="103" text-anchor="middle" font-size="15" font-weight="800" fill="#1e3a8a">P0</text>
+                  <text x="250" y="120" text-anchor="middle" font-size="9" font-weight="700" fill="#3b82f6">THINKING</text>
+                </g>
+
+                <!-- P1 (Top-Right) -->
+                <g id="vis-phil-1">
+                  <circle cx="388" cy="205" r="32" fill="#eff6ff" stroke="#3b82f6" stroke-width="3" />
+                  <text x="388" y="203" text-anchor="middle" font-size="15" font-weight="800" fill="#1e3a8a">P1</text>
+                  <text x="388" y="220" text-anchor="middle" font-size="9" font-weight="700" fill="#3b82f6">THINKING</text>
+                </g>
+
+                <!-- P2 (Bottom-Right) -->
+                <g id="vis-phil-2">
+                  <circle cx="335" cy="367" r="32" fill="#eff6ff" stroke="#3b82f6" stroke-width="3" />
+                  <text x="335" y="365" text-anchor="middle" font-size="15" font-weight="800" fill="#1e3a8a">P2</text>
+                  <text x="335" y="382" text-anchor="middle" font-size="9" font-weight="700" fill="#3b82f6">THINKING</text>
+                </g>
+
+                <!-- P3 (Bottom-Left) -->
+                <g id="vis-phil-3">
+                  <circle cx="165" cy="367" r="32" fill="#eff6ff" stroke="#3b82f6" stroke-width="3" />
+                  <text x="165" y="365" text-anchor="middle" font-size="15" font-weight="800" fill="#1e3a8a">P3</text>
+                  <text x="165" y="382" text-anchor="middle" font-size="9" font-weight="700" fill="#3b82f6">THINKING</text>
+                </g>
+
+                <!-- P4 (Top-Left) -->
+                <g id="vis-phil-4">
+                  <circle cx="112" cy="205" r="32" fill="#eff6ff" stroke="#3b82f6" stroke-width="3" />
+                  <text x="112" y="203" text-anchor="middle" font-size="15" font-weight="800" fill="#1e3a8a">P4</text>
+                  <text x="112" y="220" text-anchor="middle" font-size="9" font-weight="700" fill="#3b82f6">THINKING</text>
+                </g>
+              </svg>
+            </div>
+
+            <div class="mapping-grid">
+              <div class="mapping-card">
+                <div class="mapping-p-tag">P0</div>
+                <div class="mapping-c-tag">Uses <strong>C0</strong> and <strong>C1</strong></div>
+              </div>
+              <div class="mapping-card">
+                <div class="mapping-p-tag">P1</div>
+                <div class="mapping-c-tag">Uses <strong>C1</strong> and <strong>C2</strong></div>
+              </div>
+              <div class="mapping-card">
+                <div class="mapping-p-tag">P2</div>
+                <div class="mapping-c-tag">Uses <strong>C2</strong> and <strong>C3</strong></div>
+              </div>
+              <div class="mapping-card">
+                <div class="mapping-p-tag">P3</div>
+                <div class="mapping-c-tag">Uses <strong>C3</strong> and <strong>C4</strong></div>
+              </div>
+              <div class="mapping-card">
+                <div class="mapping-p-tag">P4</div>
+                <div class="mapping-c-tag">Uses <strong>C4</strong> and <strong>C0</strong></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. ALGORITHM -->
+    <section class="section" id="algorithm">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-tag">Pseudocode</span>
+          <h2 class="section-title">Classic Philosopher Algorithm</h2>
+          <p class="section-subtitle">The standard algorithm executed by each philosopher process <code>i</code> (where <code>0 &le; i &le; 4</code>).</p>
+        </div>
+
+        <div class="code-container">
+          <div class="code-header">
+            <span class="code-title">philosopher_process(int i)</span>
+            <div class="code-dots">
+              <div class="code-dot dot-red"></div>
+              <div class="code-dot dot-yellow"></div>
+              <div class="code-dot dot-green"></div>
+            </div>
+          </div>
+          <pre class="code-pre"><code><span class="code-keyword">while</span> <span class="code-var">true</span> <span class="code-keyword">do</span>
+{
+    <span class="code-func">THINK</span>;
+
+    <span class="code-func">PICKUP</span>(<span class="code-var">CHOPSTICK</span>[i], <span class="code-var">CHOPSTICK</span>[(i+<span class="code-var">1</span>) <span class="code-op">mod</span> <span class="code-var">5</span>]);
+
+    <span class="code-func">EAT</span>;
+
+    <span class="code-func">PUTDOWN</span>(<span class="code-var">CHOPSTICK</span>[i], <span class="code-var">CHOPSTICK</span>[(i+<span class="code-var">1</span>) <span class="code-op">mod</span> <span class="code-var">5</span>]);
+}</code></pre>
+        </div>
+
+        <div class="algo-breakdown">
+          <div class="breakdown-card">
+            <span class="breakdown-badge badge-think">THINK</span>
+            <p class="breakdown-desc">&rarr; Philosopher is in the non-critical thinking state and does not require any chopsticks.</p>
+          </div>
+          <div class="breakdown-card">
+            <span class="breakdown-badge badge-pickup">PICKUP</span>
+            <p class="breakdown-desc">&rarr; Philosopher attempts to acquire both their left and right chopsticks before eating.</p>
+          </div>
+          <div class="breakdown-card">
+            <span class="breakdown-badge badge-eat">EAT</span>
+            <p class="breakdown-desc">&rarr; Philosopher enters critical section and eats only when both chopsticks are acquired.</p>
+          </div>
+          <div class="breakdown-card">
+            <span class="breakdown-badge badge-putdown">PUTDOWN</span>
+            <p class="breakdown-desc">&rarr; Philosopher releases both chopsticks after eating, making them available for neighbors.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. EXPLAIN (i+1) mod 5 -->
+    <section class="section section-alt" id="modulo">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-tag">Mathematics</span>
+          <h2 class="section-title">Understanding (i + 1) mod 5</h2>
+          <p class="section-subtitle">Why modulo arithmetic is used to model the circular table wrap-around seamlessly.</p>
+        </div>
+
+        <div class="math-grid">
+          <div class="data-table-container">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Philosopher (i)</th>
+                  <th>Left Chopstick [i]</th>
+                  <th>Right Chopstick [(i+1) mod 5]</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>P0</strong> (i = 0)</td>
+                  <td>C0</td>
+                  <td>C1</td>
+                </tr>
+                <tr>
+                  <td><strong>P1</strong> (i = 1)</td>
+                  <td>C1</td>
+                  <td>C2</td>
+                </tr>
+                <tr>
+                  <td><strong>P2</strong> (i = 2)</td>
+                  <td>C2</td>
+                  <td>C3</td>
+                </tr>
+                <tr>
+                  <td><strong>P3</strong> (i = 3)</td>
+                  <td>C3</td>
+                  <td>C4</td>
+                </tr>
+                <tr>
+                  <td><strong>P4</strong> (i = 4)</td>
+                  <td>C4</td>
+                  <td><strong>C0</strong> (Wrap-around)</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="math-calc-card">
+            <h3 style="font-size: 1.15rem; font-weight: 700;">Mathematical Walkthrough</h3>
+
+            <div class="calc-box">
+              <div class="calc-title">Example 1: When i = 0 (Philosopher P0)</div>
+              <div class="calc-code">
+                (i + 1) mod 5<br/>
+                = (0 + 1) mod 5<br/>
+                = <strong>1</strong><br/>
+                &there4; <strong>P0</strong> &rarr; <strong>C0</strong> (Left) and <strong>C1</strong> (Right)
+              </div>
+            </div>
+
+            <div class="calc-box">
+              <div class="calc-title">Example 2: When i = 4 (Philosopher P4)</div>
+              <div class="calc-code">
+                (i + 1) mod 5<br/>
+                = (4 + 1) mod 5<br/>
+                = (5) mod 5<br/>
+                = <strong>0</strong><br/>
+                &there4; <strong>P4</strong> &rarr; <strong>C4</strong> (Left) and <strong>C0</strong> (Right)
+              </div>
+            </div>
+
+            <p style="font-size: 0.9rem; color: var(--text-muted);">
+              <strong>Key Insight:</strong> The modulo operator ensures the 5th philosopher (P4) wraps around to share the first chopstick (C0) with P0, closing the circular table loop.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6. INTERACTIVE SIMULATION (MAIN FEATURE) -->
+    <section class="section" id="simulation">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-tag">Interactive Lab</span>
+          <h2 class="section-title">Interactive Dining Simulation</h2>
+          <p class="section-subtitle">Real-time simulator demonstrating process state changes, resource contention, and mutual exclusion.</p>
+        </div>
+
+        <div class="sim-container">
+          <!-- Simulation Toolbar -->
+          <div class="sim-controls-bar">
+            <div class="sim-btn-group">
+              <button class="btn-primary" id="btnStartSim">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                <span>Start Simulation</span>
+              </button>
+              <button class="btn-secondary" id="btnPauseSim" disabled>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+                <span>Pause</span>
+              </button>
+              <button class="btn-secondary" id="btnNextStep">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 4 15 12 5 20 5 4"/><line x1="19" y1="5" x2="19" y2="19" stroke="currentColor" stroke-width="2"/></svg>
+                <span>Next Step</span>
+              </button>
+              <button class="btn-secondary" id="btnResetSim">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+                <span>Reset</span>
+              </button>
+              <button class="btn-danger" id="btnDeadlock">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                <span>Demonstrate Deadlock</span>
+              </button>
+            </div>
+
+            <div class="sim-speed-control">
+              <label for="speedSelect">Speed:</label>
+              <select id="speedSelect" class="sim-speed-select">
+                <option value="2500">Slow (2.5s)</option>
+                <option value="1500" selected>Normal (1.5s)</option>
+                <option value="800">Fast (0.8s)</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Main Layout Grid -->
+          <div class="sim-layout-grid">
+            <!-- Left: SVG Circular Dining Stage -->
+            <div class="sim-stage-wrapper">
+              <svg class="sim-table-svg" viewBox="0 0 500 500" id="simSvg">
+                <!-- Table Base -->
+                <circle cx="250" cy="250" r="190" fill="#ffffff" stroke="#cbd5e1" stroke-width="3" />
+                <circle cx="250" cy="250" r="135" fill="#f8fafc" stroke="#94a3b8" stroke-width="2" stroke-dasharray="4 4" />
+                <circle cx="250" cy="250" r="45" fill="#f1f5f9" stroke="#cbd5e1" stroke-width="1.5" />
+                <text x="250" y="247" text-anchor="middle" font-size="11" font-weight="700" fill="#64748b">INTERACTIVE</text>
+                <text x="250" y="261" text-anchor="middle" font-size="9" font-weight="600" fill="#94a3b8">DINING TABLE</text>
+
+                <!-- 5 Chopsticks -->
+                <!-- C1 -->
+                <g id="sim-chop-group-1">
+                  <line id="sim-chop-1" class="sim-chopstick" x1="291" y1="193" x2="315" y2="161" stroke="#94a3b8" stroke-width="4" />
+                  <text id="sim-chop-label-1" x="315" y="152" text-anchor="middle" font-size="10" font-weight="700" fill="#64748b">C1: Avail</text>
+                </g>
+                <!-- C2 -->
+                <g id="sim-chop-group-2">
+                  <line id="sim-chop-2" class="sim-chopstick" x1="317" y1="272" x2="355" y2="284" stroke="#94a3b8" stroke-width="4" />
+                  <text id="sim-chop-label-2" x="355" y="275" text-anchor="middle" font-size="10" font-weight="700" fill="#64748b">C2: Avail</text>
+                </g>
+                <!-- C3 -->
+                <g id="sim-chop-group-3">
+                  <line id="sim-chop-3" class="sim-chopstick" x1="250" y1="320" x2="250" y2="360" stroke="#94a3b8" stroke-width="4" />
+                  <text id="sim-chop-label-3" x="250" y="375" text-anchor="middle" font-size="10" font-weight="700" fill="#64748b">C3: Avail</text>
+                </g>
+                <!-- C4 -->
+                <g id="sim-chop-group-4">
+                  <line id="sim-chop-4" class="sim-chopstick" x1="183" y1="272" x2="145" y2="284" stroke="#94a3b8" stroke-width="4" />
+                  <text id="sim-chop-label-4" x="145" y="275" text-anchor="middle" font-size="10" font-weight="700" fill="#64748b">C4: Avail</text>
+                </g>
+                <!-- C0 -->
+                <g id="sim-chop-group-0">
+                  <line id="sim-chop-0" class="sim-chopstick" x1="209" y1="193" x2="185" y2="161" stroke="#94a3b8" stroke-width="4" />
+                  <text id="sim-chop-label-0" x="185" y="152" text-anchor="middle" font-size="10" font-weight="700" fill="#64748b">C0: Avail</text>
+                </g>
+
+                <!-- 5 Philosophers (Interactive Nodes) -->
+                <!-- P0 -->
+                <g id="sim-phil-group-0" class="sim-phil-node">
+                  <circle id="sim-phil-0" cx="250" cy="105" r="32" fill="#eff6ff" stroke="#3b82f6" stroke-width="3" />
+                  <text x="250" y="101" text-anchor="middle" font-size="15" font-weight="800" fill="#0f172a">P0</text>
+                  <text id="sim-phil-state-0" x="250" y="118" text-anchor="middle" font-size="9" font-weight="700" fill="#1d4ed8">THINKING</text>
+                </g>
+                <!-- P1 -->
+                <g id="sim-phil-group-1" class="sim-phil-node">
+                  <circle id="sim-phil-1" cx="388" cy="205" r="32" fill="#eff6ff" stroke="#3b82f6" stroke-width="3" />
+                  <text x="388" y="201" text-anchor="middle" font-size="15" font-weight="800" fill="#0f172a">P1</text>
+                  <text id="sim-phil-state-1" x="388" y="218" text-anchor="middle" font-size="9" font-weight="700" fill="#1d4ed8">THINKING</text>
+                </g>
+                <!-- P2 -->
+                <g id="sim-phil-group-2" class="sim-phil-node">
+                  <circle id="sim-phil-2" cx="335" cy="367" r="32" fill="#eff6ff" stroke="#3b82f6" stroke-width="3" />
+                  <text x="335" y="363" text-anchor="middle" font-size="15" font-weight="800" fill="#0f172a">P2</text>
+                  <text id="sim-phil-state-2" x="335" y="380" text-anchor="middle" font-size="9" font-weight="700" fill="#1d4ed8">THINKING</text>
+                </g>
+                <!-- P3 -->
+                <g id="sim-phil-group-3" class="sim-phil-node">
+                  <circle id="sim-phil-3" cx="165" cy="367" r="32" fill="#eff6ff" stroke="#3b82f6" stroke-width="3" />
+                  <text x="165" y="363" text-anchor="middle" font-size="15" font-weight="800" fill="#0f172a">P3</text>
+                  <text id="sim-phil-state-3" x="165" y="380" text-anchor="middle" font-size="9" font-weight="700" fill="#1d4ed8">THINKING</text>
+                </g>
+                <!-- P4 -->
+                <g id="sim-phil-group-4" class="sim-phil-node">
+                  <circle id="sim-phil-4" cx="112" cy="205" r="32" fill="#eff6ff" stroke="#3b82f6" stroke-width="3" />
+                  <text x="112" y="201" text-anchor="middle" font-size="15" font-weight="800" fill="#0f172a">P4</text>
+                  <text id="sim-phil-state-4" x="112" y="218" text-anchor="middle" font-size="9" font-weight="700" fill="#1d4ed8">THINKING</text>
+                </g>
+              </svg>
+              <div style="font-size: 0.8rem; color: var(--text-light); margin-top: 0.5rem; text-align: center;">
+                💡 <em>Tip: Click on any philosopher to toggle their state manually!</em>
+              </div>
+            </div>
+
+            <!-- Right: Legend & Live Activity Log -->
+            <div class="sim-info-panel">
+              <div class="legend-box">
+                <div class="legend-title">State Legend</div>
+                <div class="legend-items">
+                  <div class="legend-item">
+                    <span class="legend-dot dot-thinking"></span>
+                    <span>THINKING</span>
+                  </div>
+                  <div class="legend-item">
+                    <span class="legend-dot dot-hungry"></span>
+                    <span>HUNGRY</span>
+                  </div>
+                  <div class="legend-item">
+                    <span class="legend-dot dot-waiting"></span>
+                    <span>WAITING</span>
+                  </div>
+                  <div class="legend-item">
+                    <span class="legend-dot dot-eating"></span>
+                    <span>EATING</span>
+                  </div>
+                  <div class="legend-item">
+                    <span class="legend-dot dot-avail"></span>
+                    <span>AVAILABLE (Chopstick)</span>
+                  </div>
+                  <div class="legend-item">
+                    <span class="legend-dot dot-inuse"></span>
+                    <span>IN USE (Chopstick)</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="status-feed">
+                <div class="status-feed-header">
+                  <span class="status-feed-title">Live Process Feed</span>
+                  <button class="status-feed-clear" id="btnClearLogs">Clear Log</button>
+                </div>
+                <ul class="status-log-list" id="statusLogList">
+                  <li class="status-log-item">[Ready] Click "Start Simulation" or "Next Step" to begin.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <!-- Deadlock Alert Banner -->
+          <div class="deadlock-alert" id="deadlockAlert">
+            <div class="deadlock-alert-header">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+              <span>DEADLOCK OCCURRED!</span>
+            </div>
+            <p class="deadlock-alert-text">
+              Each philosopher has picked up one chopstick (their left) and is waiting indefinitely for the second chopstick (their right), which is held by their neighbor. Because no philosopher can proceed or release their held chopstick, <strong>all five processes are permanently blocked</strong>.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 7 & 8. DEADLOCK EXPLANATION (COFFMAN CONDITIONS) -->
+    <section class="section section-alt" id="deadlock">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-tag">Deadlock Analysis</span>
+          <h2 class="section-title">The Four Coffman Conditions for Deadlock</h2>
+          <p class="section-subtitle">Deadlock can only occur if ALL four of the following conditions hold simultaneously:</p>
+        </div>
+
+        <div class="coffman-grid">
+          <div class="coffman-card">
+            <div class="coffman-num">01</div>
+            <h3 class="coffman-title">Mutual Exclusion</h3>
+            <p class="coffman-desc">At least one resource must be held in a non-shareable mode (only one process can use it at a time).</p>
+            <div class="coffman-example">
+              <strong>In Philosophers:</strong> Each chopstick can be held by only ONE philosopher at any given moment.
+            </div>
+          </div>
+
+          <div class="coffman-card">
+            <div class="coffman-num">02</div>
+            <h3 class="coffman-title">Hold and Wait</h3>
+            <p class="coffman-desc">A process currently holding at least one resource is waiting to acquire additional resources held by other processes.</p>
+            <div class="coffman-example">
+              <strong>In Philosophers:</strong> Each philosopher holds their left chopstick while waiting for the right chopstick.
+            </div>
+          </div>
+
+          <div class="coffman-card">
+            <div class="coffman-num">03</div>
+            <h3 class="coffman-title">No Preemption</h3>
+            <p class="coffman-desc">Resources cannot be forcibly confiscated from a process; they can only be released voluntarily by the holding process.</p>
+            <div class="coffman-example">
+              <strong>In Philosophers:</strong> A philosopher cannot snatch a chopstick out of a neighbor's hand.
+            </div>
+          </div>
+
+          <div class="coffman-card">
+            <div class="coffman-num">04</div>
+            <h3 class="coffman-title">Circular Wait</h3>
+            <p class="coffman-desc">A closed chain of processes exists such that each process holds a resource that the next process in the chain requires.</p>
+            <div class="coffman-example">
+              <strong>In Philosophers:</strong> P0 waits for P1, P1 waits for P2, P2 for P3, P3 for P4, and P4 waits for P0!
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 9. STARVATION -->
+    <section class="section" id="starvation">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-tag">Concurrency Hazards</span>
+          <h2 class="section-title">Understanding Starvation (Livelock)</h2>
+          <p class="section-subtitle">What happens when a process waits indefinitely while other processes continue to make progress?</p>
+        </div>
+
+        <div class="starvation-grid">
+          <div class="concept-card">
+            <h3 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 0.75rem;">What is Starvation?</h3>
+            <p style="color: var(--text-muted); font-size: 0.95rem; line-height: 1.7; margin-bottom: 1rem;">
+              Starvation is an indefinite delay where a philosopher may repeatedly remain hungry because other philosophers continuously acquire the required chopsticks first.
+            </p>
+            <div style="background: var(--state-hungry-bg); border-left: 4px solid var(--state-hungry); padding: 1rem; border-radius: 0 var(--radius-sm) var(--radius-sm) 0; font-size: 0.9rem; color: #92400e;">
+              <strong>Example Scenario:</strong> Philosophers P0 and P2 eat alternately. P1 (sitting between them) can never acquire both C0 and C1 at the same time and starves indefinitely, even though the system as a whole is not deadlocked!
+            </div>
+          </div>
+
+          <div class="starvation-flow-card">
+            <h3 style="font-size: 1.15rem; font-weight: 700;">Starvation Process Cycle</h3>
+            <div class="starvation-chain">
+              <div class="starve-node hungry">HUNGRY</div>
+              <span class="cycle-arrow">&rarr;</span>
+              <div class="starve-node wait">WAITING</div>
+              <span class="cycle-arrow">&rarr;</span>
+              <div class="starve-node wait">WAITING</div>
+              <span class="cycle-arrow">&rarr;</span>
+              <div class="starve-node wait">WAITING...</div>
+            </div>
+            <p style="font-size: 0.875rem; color: var(--text-muted);">
+              Unlike Deadlock (where <em>all</em> progress stops), in Starvation some processes progress smoothly while one or more unfortunate processes never get service.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 10 & 11. SYNCHRONIZATION SOLUTIONS & SEMAPHORES -->
+    <section class="section section-alt" id="solutions">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-tag">Solutions</span>
+          <h2 class="section-title">Classic Synchronization Solutions</h2>
+          <p class="section-subtitle">Techniques to prevent Deadlock and Starvation in the Dining Philosophers Problem.</p>
+        </div>
+
+        <div class="solutions-grid">
+          <div class="solution-card">
+            <div class="solution-icon-box">1</div>
+            <h3 class="solution-title">Limit Active Philosophers</h3>
+            <p class="solution-desc">
+              Allow at most <strong>four philosophers</strong> to sit at the table simultaneously (using a counting semaphore initialized to 4). By Pigeonhole Principle, at least one philosopher will always get two chopsticks.
+            </p>
+          </div>
+
+          <div class="solution-card">
+            <div class="solution-icon-box">2</div>
+            <h3 class="solution-title">Semaphore-Based Mutex</h3>
+            <p class="solution-desc">
+              Represent each chopstick as a binary semaphore. A philosopher picks up chopsticks only if both are available inside a mutually exclusive critical section.
+            </p>
+          </div>
+
+          <div class="solution-card">
+            <div class="solution-icon-box">3</div>
+            <h3 class="solution-title">Monitors</h3>
+            <p class="solution-desc">
+              Use a high-level monitor construct with condition variables. A philosopher can only transition to EATING if both left and right neighbors are not currently eating.
+            </p>
+          </div>
+
+          <div class="solution-card">
+            <div class="solution-icon-box">4</div>
+            <h3 class="solution-title">Arbitrator / Waiter</h3>
+            <p class="solution-desc">
+              Introduce a centralized "waiter". A philosopher must ask the waiter for permission before picking up chopsticks. The waiter grants permission to only one philosopher at a time.
+            </p>
+          </div>
+
+          <div class="solution-card">
+            <div class="solution-icon-box">5</div>
+            <h3 class="solution-title">Asymmetric Resource Ordering</h3>
+            <p class="solution-desc">
+              Break the circular wait symmetry: An <strong>odd philosopher</strong> picks up the left chopstick first then right, while an <strong>even philosopher</strong> picks up the right chopstick first then left.
+            </p>
+          </div>
+        </div>
+
+        <!-- Semaphore Explanation Sub-card (Section 11) -->
+        <div class="semaphore-box">
+          <h3 style="font-size: 1.25rem; font-weight: 700; color: var(--text-dark); margin-bottom: 0.5rem;">Semaphore-Based Control Concept</h3>
+          <p style="color: var(--text-muted); font-size: 0.95rem;">
+            A semaphore is an integer variable accessed only through two standard atomic operations: <code>wait()</code> (or <code>P</code>) and <code>signal()</code> (or <code>V</code>).
+          </p>
+
+          <div class="semaphore-ops">
+            <div class="op-card">
+              <div class="op-name">wait(S) &bull; Acquire</div>
+              <p style="font-size: 0.9rem; color: var(--text-muted); line-height: 1.6;">
+                Requests access to the resource. If value &le; 0, the process blocks/waits. Otherwise, decrements value: <code>S = S - 1</code>.
+              </p>
+            </div>
+            <div class="op-card">
+              <div class="op-name">signal(S) &bull; Release</div>
+              <p style="font-size: 0.9rem; color: var(--text-muted); line-height: 1.6;">
+                Releases access to the resource. Increments the value: <code>S = S + 1</code>, waking up any waiting process.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 12. STEP-BY-STEP EXAMPLE -->
+    <section class="section" id="walkthrough">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-tag">Step-by-Step</span>
+          <h2 class="section-title">Step-by-Step Example Walkthrough</h2>
+          <p class="section-subtitle">Walk through the chronological state sequence of philosopher P0 acquiring chopsticks, eating, and releasing.</p>
+        </div>
+
+        <div class="step-walkthrough-card">
+          <div class="step-nav-bar">
+            <span class="step-indicator" id="stepIndicator">Step 1 of 7</span>
+            <div style="display: flex; gap: 0.5rem;">
+              <button class="btn-secondary" id="btnPrevStep" disabled>&larr; Previous</button>
+              <button class="btn-primary" id="btnNextExampleStep">Next &rarr;</button>
+            </div>
+          </div>
+
+          <div class="step-stage-box">
+            <div class="step-heading" id="stepHeading">Step 1: Initial State</div>
+            <p style="color: var(--text-muted); max-width: 650px;" id="stepDesc">
+              All five philosophers are in the THINKING state. All five chopsticks are on the table and AVAILABLE.
+            </p>
+            <div class="step-state-display" id="stepStateDisplay">
+              <!-- Dynamically rendered chips -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 13. DEADLOCK VS STARVATION COMPARISON -->
+    <section class="section section-alt" id="comparison">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-tag">Comparison</span>
+          <h2 class="section-title">Deadlock vs Starvation</h2>
+          <p class="section-subtitle">Summary comparison table designed for second-year Computer Engineering examinations.</p>
+        </div>
+
+        <div class="comparison-table-wrapper">
+          <table class="comparison-table">
+            <thead>
+              <tr>
+                <th class="feature-col">Feature</th>
+                <th class="deadlock-col">Deadlock</th>
+                <th class="starvation-col">Starvation (Livelock)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="feature-col">Meaning</td>
+                <td class="deadlock-col">Every process in the set is waiting for an event that only another waiting process can cause.</td>
+                <td class="starvation-col">A process waits indefinitely while other processes continuously receive the requested resources.</td>
+              </tr>
+              <tr>
+                <td class="feature-col">Condition</td>
+                <td class="deadlock-col">Requires all 4 Coffman conditions (Mutual Exclusion, Hold &amp; Wait, No Preemption, Circular Wait).</td>
+                <td class="starvation-col">Unfair scheduling or greedy neighboring processes claiming shared resources repeatedly.</td>
+              </tr>
+              <tr>
+                <td class="feature-col">Example</td>
+                <td class="deadlock-col">All 5 philosophers hold their left chopstick and wait forever for their right chopstick.</td>
+                <td class="starvation-col">Philosophers P0 and P2 eat repeatedly; P1 in between never finds both chopsticks free.</td>
+              </tr>
+              <tr>
+                <td class="feature-col">System Result</td>
+                <td class="deadlock-col">Complete system halt; zero throughput and zero CPU progress.</td>
+                <td class="starvation-col">System continues executing other processes, but specific victim processes starve.</td>
+              </tr>
+              <tr>
+                <td class="feature-col">Possible Solution</td>
+                <td class="deadlock-col">Break circular wait (e.g. Asymmetric order, limit to 4 philosophers, arbitrator).</td>
+                <td class="starvation-col">Aging, fair FIFO queues, monitors with fair ticket scheduling.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- 14. QUIZ -->
+    <section class="section" id="quiz">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-tag">Knowledge Check</span>
+          <h2 class="section-title">Self-Assessment Quiz</h2>
+          <p class="section-subtitle">Test your understanding of the Dining Philosophers Problem and process synchronization.</p>
+        </div>
+
+        <div class="quiz-wrapper">
+          <div class="quiz-score-banner">
+            <span class="quiz-score-text" id="quizScoreSpan">Score: 0 / 5</span>
+            <button class="btn-secondary" id="btnResetQuiz">Retake Quiz</button>
+          </div>
+
+          <div class="quiz-list">
+            <!-- Q1 -->
+            <div class="quiz-item" id="quiz-item-q1">
+              <div class="quiz-question">1. How many philosophers are present in the classic problem?</div>
+              <div class="quiz-options">
+                <button class="quiz-option-btn" data-q="q1" data-option="A">A. 3</button>
+                <button class="quiz-option-btn" data-q="q1" data-option="B">B. 4</button>
+                <button class="quiz-option-btn" data-q="q1" data-option="C">C. 5</button>
+                <button class="quiz-option-btn" data-q="q1" data-option="D">D. 6</button>
+              </div>
+              <div class="quiz-feedback" id="feedback-q1"></div>
+            </div>
+
+            <!-- Q2 -->
+            <div class="quiz-item" id="quiz-item-q2">
+              <div class="quiz-question">2. How many chopsticks are present around the table?</div>
+              <div class="quiz-options">
+                <button class="quiz-option-btn" data-q="q2" data-option="A">A. 3</button>
+                <button class="quiz-option-btn" data-q="q2" data-option="B">B. 4</button>
+                <button class="quiz-option-btn" data-q="q2" data-option="C">C. 5</button>
+                <button class="quiz-option-btn" data-q="q2" data-option="D">D. 6</button>
+              </div>
+              <div class="quiz-feedback" id="feedback-q2"></div>
+            </div>
+
+            <!-- Q3 -->
+            <div class="quiz-item" id="quiz-item-q3">
+              <div class="quiz-question">3. How many chopsticks does a philosopher need to eat?</div>
+              <div class="quiz-options">
+                <button class="quiz-option-btn" data-q="q3" data-option="A">A. 1</button>
+                <button class="quiz-option-btn" data-q="q3" data-option="B">B. 2</button>
+                <button class="quiz-option-btn" data-q="q3" data-option="C">C. 3</button>
+                <button class="quiz-option-btn" data-q="q3" data-option="D">D. 4</button>
+              </div>
+              <div class="quiz-feedback" id="feedback-q3"></div>
+            </div>
+
+            <!-- Q4 -->
+            <div class="quiz-item" id="quiz-item-q4">
+              <div class="quiz-question">4. Which problem can occur if every philosopher picks up one chopstick at the same time?</div>
+              <div class="quiz-options">
+                <button class="quiz-option-btn" data-q="q4" data-option="A">A. Compilation error</button>
+                <button class="quiz-option-btn" data-q="q4" data-option="B">B. Deadlock</button>
+                <button class="quiz-option-btn" data-q="q4" data-option="C">C. Syntax error</button>
+                <button class="quiz-option-btn" data-q="q4" data-option="D">D. Memory leak</button>
+              </div>
+              <div class="quiz-feedback" id="feedback-q4"></div>
+            </div>
+
+            <!-- Q5 -->
+            <div class="quiz-item" id="quiz-item-q5">
+              <div class="quiz-question">5. What does (i + 1) mod 5 help represent?</div>
+              <div class="quiz-options">
+                <button class="quiz-option-btn" data-q="q5" data-option="A">A. CPU scheduling</button>
+                <button class="quiz-option-btn" data-q="q5" data-option="B">B. Circular arrangement</button>
+                <button class="quiz-option-btn" data-q="q5" data-option="C">C. Memory allocation</button>
+                <button class="quiz-option-btn" data-q="q5" data-option="D">D. File management</button>
+              </div>
+              <div class="quiz-feedback" id="feedback-q5"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 15. KEY TAKEAWAYS -->
+    <section class="section section-alt" id="takeaways">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-tag">Summary</span>
+          <h2 class="section-title">Key Takeaways</h2>
+          <p class="section-subtitle">Core concepts to remember for your Operating Systems curriculum.</p>
+        </div>
+
+        <div class="takeaways-card">
+          <div class="takeaways-grid">
+            <div class="takeaway-item">
+              <span class="takeaway-check">&#10003;</span>
+              <span class="takeaway-text">Five philosophers share five chopsticks.</span>
+            </div>
+            <div class="takeaway-item">
+              <span class="takeaway-check">&#10003;</span>
+              <span class="takeaway-text">Each philosopher needs two chopsticks to eat.</span>
+            </div>
+            <div class="takeaway-item">
+              <span class="takeaway-check">&#10003;</span>
+              <span class="takeaway-text">Philosophers alternate between thinking and eating.</span>
+            </div>
+            <div class="takeaway-item">
+              <span class="takeaway-check">&#10003;</span>
+              <span class="takeaway-text">Chopsticks are shared resources.</span>
+            </div>
+            <div class="takeaway-item">
+              <span class="takeaway-check">&#10003;</span>
+              <span class="takeaway-text">Synchronization is required.</span>
+            </div>
+            <div class="takeaway-item">
+              <span class="takeaway-check">&#10003;</span>
+              <span class="takeaway-text">Improper synchronization can cause deadlock.</span>
+            </div>
+            <div class="takeaway-item">
+              <span class="takeaway-check">&#10003;</span>
+              <span class="takeaway-text">Starvation may also occur.</span>
+            </div>
+            <div class="takeaway-item">
+              <span class="takeaway-check">&#10003;</span>
+              <span class="takeaway-text">Semaphores and monitors can be used to solve the problem.</span>
+            </div>
+            <div class="takeaway-item" style="grid-column: 1 / -1;">
+              <span class="takeaway-check">&#10003;</span>
+              <span class="takeaway-text">(i+1) mod 5 maintains the circular arrangement.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- 16. FOOTER -->
+  <footer class="footer" id="mainFooter">
+    <div class="container">
+      <div class="footer-heading">Dining Philosophers Problem</div>
+      <div class="footer-sub">Operating Systems – Process Synchronization</div>
+    </div>
+  </footer>
+
+  <!-- Link External Scripts -->
+  <script src="script.js"></script>
+</body>
+</html>
